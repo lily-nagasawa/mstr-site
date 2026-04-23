@@ -23,7 +23,7 @@ export const translations = {
       visit: 'Visit Site',
       items: [
         {
-          title: 'ドットコムマスターBASIC',
+          title: 'ドットコムマスターBASIC予想問題演習',
           subtitle: 'Practice Questions App',
           description:
             'A web application for practicing the Dot Com Master BASIC certification exam, featuring interactive question sets and progress tracking.',
@@ -166,7 +166,7 @@ export const translations = {
       visit: 'サイトを見る',
       items: [
         {
-          title: 'ドットコムマスターBASIC',
+          title: 'ドットコムマスターBASIC予想問題演習',
           subtitle: '演習問題アプリ',
           description:
             'ドットコムマスターBASIC資格試験のための演習問題Webアプリ。インタラクティブな問題集と進捗管理機能を提供します。',

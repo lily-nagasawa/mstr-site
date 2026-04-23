@@ -200,9 +200,8 @@ function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive
       className="flex-shrink-0 bg-white overflow-hidden group"
       style={{
         width: cardWidth,
-        transform: isActive ? 'scale(1)' : 'scale(0.96)',
-        opacity: isActive ? 1 : 0.55,
-        transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease',
+        opacity: isActive ? 1 : 0.7,
+        transition: 'opacity 0.5s ease',
         boxShadow: isActive
           ? '0 24px 60px -12px rgba(0,0,0,0.18)'
           : '0 4px 16px -4px rgba(0,0,0,0.08)',
