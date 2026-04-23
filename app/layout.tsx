@@ -6,6 +6,7 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import LoadingScreen from '@/components/LoadingScreen'
 import Cursor from '@/components/Cursor'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-ink text-paper font-sans">
         <LanguageProvider>
+          <GoogleAnalytics />
           <LoadingScreen />
           <Cursor />
           {/* 全ページ共通: 赤いトップライン */}
