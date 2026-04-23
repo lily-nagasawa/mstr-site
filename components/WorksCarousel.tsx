@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { ArrowUpRight } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { translations } from '@/lib/translations'
 
@@ -212,8 +211,18 @@ function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive
           : '0 4px 16px -4px rgba(0,0,0,0.08)',
       }}
     >
-      {/* ── スクリーンショット ── */}
-      <div className="relative overflow-hidden bg-zinc-100" style={{ height: imgHeight }}>
+      {/* ── スクリーンショット (全体がリンク) ── */}
+      <a
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleClick}
+        draggable={false}
+        data-hover
+        className="relative block overflow-hidden bg-zinc-100"
+        style={{ height: imgHeight }}
+        aria-label={`Visit ${item.title}`}
+      >
         <Image
           src={screenshotUrl}
           alt={`Preview of ${item.title}`}
@@ -223,28 +232,14 @@ function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive
           unoptimized
         />
 
-        {/* ホバー時の暗いオーバーレイ */}
-        <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-colors duration-300 pointer-events-none" />
+        {/* ホバー時のオーバーレイ */}
+        <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/15 transition-colors duration-300" />
 
         {/* 赤タグ */}
         <div className="absolute top-0 left-0 bg-crimson text-white text-[8px] font-black tracking-[0.25em] uppercase px-3 py-1.5">
           {item.tag}
         </div>
-
-        {/* 右上 外部リンクアイコン */}
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handleClick}
-          draggable={false}
-          data-hover
-          className="absolute top-3 right-3 w-8 h-8 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-crimson hover:text-white"
-          aria-label={`Visit ${item.title}`}
-        >
-          <ArrowUpRight size={14} className="text-ink group-hover:text-white" />
-        </a>
-      </div>
+      </a>
 
       {/* ── コンテンツ ── */}
       <div className="p-6 border-t-2 border-t-crimson">
