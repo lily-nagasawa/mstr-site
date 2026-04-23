@@ -32,7 +32,7 @@ export const translations = {
           image: '/images/dcmb_images.png',
         },
         {
-          title: 'Japanese mstr',
+          title: 'Japanese master',
           subtitle: 'Hiragana & Katakana Worksheet',
           description:
             'An interactive worksheet application for learning Japanese hiragana and katakana, with printable practice sheets and built-in quizzes.',
@@ -175,7 +175,7 @@ export const translations = {
           image: '/images/dcmb_images.png',
         },
         {
-          title: 'Japanese mstr',
+          title: 'Japanese master',
           subtitle: 'ひらがな・カタカナワークシート',
           description:
             '日本語のひらがなとカタカナを学ぶためのインタラクティブなワークシートアプリ。印刷可能な練習シートとクイズを含みます。',
