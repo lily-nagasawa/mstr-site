@@ -182,7 +182,7 @@ export default function WorksCarousel() {
 /* ── WorkCard ── */
 
 interface WorkCardProps {
-  item: { title: string; subtitle: string; description: string; url: string; tag: string }
+  item: { title: string; subtitle: string; description: string; url: string; tag: string; image: string }
   visitText: string
   isDragging: boolean
   hasDragged: boolean
@@ -194,9 +194,6 @@ interface WorkCardProps {
 function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive, index }: WorkCardProps) {
   const handleClick = (e: React.MouseEvent) => { if (hasDragged) e.preventDefault() }
   const imgHeight = Math.round(cardWidth * 0.65)
-
-  // thum.io: 実際のサイトのスクリーンショット
-  const screenshotUrl = `https://image.thum.io/get/width/${cardWidth * 2}/crop/${imgHeight * 2}/${item.url}`
 
   return (
     <div
@@ -211,7 +208,7 @@ function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive
           : '0 4px 16px -4px rgba(0,0,0,0.08)',
       }}
     >
-      {/* ── スクリーンショット (全体がリンク) ── */}
+      {/* ── 画像 (全体がリンク) ── */}
       <a
         href={item.url}
         target="_blank"
@@ -224,12 +221,11 @@ function WorkCard({ item, visitText, isDragging, hasDragged, cardWidth, isActive
         aria-label={`Visit ${item.title}`}
       >
         <Image
-          src={screenshotUrl}
+          src={item.image}
           alt={`Preview of ${item.title}`}
           fill
           sizes={`${cardWidth}px`}
           className="object-cover object-top group-hover:scale-[1.03] transition-transform duration-700"
-          unoptimized
         />
 
         {/* ホバー時のオーバーレイ */}

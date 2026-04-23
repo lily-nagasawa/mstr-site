@@ -29,6 +29,7 @@ export const translations = {
             'A web application for practicing the Dot Com Master BASIC certification exam, featuring interactive question sets and progress tracking.',
           url: 'https://dcmb.mstr.site/',
           tag: 'Exam Prep',
+          image: '/images/dcmb_images.png',
         },
         {
           title: 'Japanese mstr',
@@ -37,6 +38,7 @@ export const translations = {
             'An interactive worksheet application for learning Japanese hiragana and katakana, with printable practice sheets and built-in quizzes.',
           url: 'https://japanese.mstr.site/',
           tag: 'Education',
+          image: '/images/jmstr_images.png',
         },
       ],
     },
@@ -170,6 +172,7 @@ export const translations = {
             'ドットコムマスターBASIC資格試験のための演習問題Webアプリ。インタラクティブな問題集と進捗管理機能を提供します。',
           url: 'https://dcmb.mstr.site/',
           tag: '資格対策',
+          image: '/images/dcmb_images.png',
         },
         {
           title: 'Japanese mstr',
@@ -178,6 +181,7 @@ export const translations = {
             '日本語のひらがなとカタカナを学ぶためのインタラクティブなワークシートアプリ。印刷可能な練習シートとクイズを含みます。',
           url: 'https://japanese.mstr.site/',
           tag: '教育',
+          image: '/images/jmstr_images.png',
         },
       ],
     },
