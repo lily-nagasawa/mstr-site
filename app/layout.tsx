@@ -43,6 +43,9 @@ export const metadata: Metadata = {
     description: 'Portfolio of Lily Nagasawa, a Web Developer and Creator based in Yokohama, Japan.',
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: 'XsFSrFzroR55YqxPZd4fHnVO__Jnkslm6WYel241WRQ',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
