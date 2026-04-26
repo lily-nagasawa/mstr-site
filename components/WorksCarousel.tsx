@@ -28,6 +28,8 @@ export default function WorksCarousel() {
   const maxTranslateRef = useRef(0)
   const cardWidthRef    = useRef(460)
   const itemCountRef    = useRef(t.items.length)
+  const activeIndexRef  = useRef(0)
+  const autoTimerRef    = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const itemCount    = t.items.length
   const maxTranslate = -(itemCount - 1) * (cardWidth + GAP)
@@ -36,6 +38,7 @@ export default function WorksCarousel() {
   useEffect(() => { maxTranslateRef.current = maxTranslate }, [maxTranslate])
   useEffect(() => { cardWidthRef.current    = cardWidth    }, [cardWidth])
   useEffect(() => { itemCountRef.current    = itemCount    }, [itemCount])
+  useEffect(() => { activeIndexRef.current  = activeIndex  }, [activeIndex])
 
   useEffect(() => {
     const update = () => {
@@ -88,16 +91,37 @@ export default function WorksCarousel() {
     []
   )
 
+  const stopAutoPlay = useCallback(() => {
+    if (autoTimerRef.current) {
+      clearInterval(autoTimerRef.current)
+      autoTimerRef.current = null
+    }
+  }, [])
+
+  const startAutoPlay = useCallback(() => {
+    stopAutoPlay()
+    autoTimerRef.current = setInterval(() => {
+      if (isDraggingRef.current) return
+      snapTo((activeIndexRef.current + 1) % itemCountRef.current)
+    }, 3500)
+  }, [snapTo, stopAutoPlay])
+
+  useEffect(() => {
+    startAutoPlay()
+    return stopAutoPlay
+  }, [startAutoPlay, stopAutoPlay])
+
   // Mouse drag — uses state (React events are synchronous, no timing issue)
   const [dragStart, setDragStart] = useState({ x: 0, translate: 0 })
 
   const startMouseDrag = useCallback(
     (clientX: number) => {
+      stopAutoPlay()
       setIsDragging(true)
       setHasDragged(false)
       setDragStart({ x: clientX, translate: translateX })
     },
-    [translateX]
+    [translateX, stopAutoPlay]
   )
 
   const moveMouseDrag = useCallback(
@@ -125,17 +149,19 @@ export default function WorksCarousel() {
         ? diff < 0 ? current + 1 : current - 1
         : Math.round(-translateXRef.current / step)
       snapTo(target)
+      startAutoPlay()
     },
-    [isDragging, dragStart, cardWidth, snapTo]
+    [isDragging, dragStart, cardWidth, snapTo, startAutoPlay]
   )
 
   // Touch drag — uses refs so it works before React re-renders
   const startTouchDrag = useCallback((clientX: number) => {
+    stopAutoPlay()
     isDraggingRef.current  = true
     dragStartRef.current   = { x: clientX, translate: translateXRef.current }
     setIsDragging(true)
     setHasDragged(false)
-  }, [])
+  }, [stopAutoPlay])
 
   const endTouchDrag = useCallback((clientX: number) => {
     if (!isDraggingRef.current) return
@@ -148,7 +174,8 @@ export default function WorksCarousel() {
       ? diff < 0 ? current + 1 : current - 1
       : Math.round(-translateXRef.current / step)
     snapTo(target)
-  }, [snapTo])
+    startAutoPlay()
+  }, [snapTo, startAutoPlay])
 
   return (
     <section
@@ -225,7 +252,7 @@ export default function WorksCarousel() {
         {t.items.map((_, i) => (
           <button
             key={i}
-            onClick={() => snapTo(i)}
+            onClick={() => { snapTo(i); startAutoPlay() }}
             data-hover
             className={`transition-all duration-300 ${
               i === activeIndex
