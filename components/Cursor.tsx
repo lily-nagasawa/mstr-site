@@ -60,7 +60,7 @@ export default function Cursor() {
       <div
         ref={dotRef}
         className="fixed top-0 left-0 w-2 h-2 rounded-full bg-white pointer-events-none z-[9998] mix-blend-difference"
-        style={{ willChange: 'transform' }}
+        style={{ willChange: 'transform', transform: 'translate(-100px, -100px)' }}
       />
       {/* Ring */}
       <div
@@ -68,6 +68,7 @@ export default function Cursor() {
         className="fixed top-0 left-0 rounded-full border pointer-events-none z-[9997]"
         style={{
           willChange: 'transform, width, height',
+          transform: 'translate(-100px, -100px)',
           transition:
             'width 0.22s cubic-bezier(0.16,1,0.3,1), height 0.22s cubic-bezier(0.16,1,0.3,1), border-color 0.2s, background-color 0.2s',
         }}

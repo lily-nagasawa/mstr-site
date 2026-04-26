@@ -66,7 +66,7 @@ export default function Hero() {
               loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24'
             }`}
             style={{
-              fontSize: 'clamp(4.5rem, 14vw, 12rem)',
+              fontSize: 'clamp(3rem, 13vw, 12rem)',
               transitionDelay: '0.08s',
             }}
           >
@@ -79,7 +79,7 @@ export default function Hero() {
               loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24'
             }`}
             style={{
-              fontSize: 'clamp(4.5rem, 14vw, 12rem)',
+              fontSize: 'clamp(3rem, 13vw, 12rem)',
               color: 'transparent',
               WebkitTextStroke: '1.5px rgba(242,240,235,0.22)',
               transitionDelay: '0.18s',
