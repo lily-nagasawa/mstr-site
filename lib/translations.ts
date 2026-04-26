@@ -40,6 +40,15 @@ export const translations = {
           tag: 'Education',
           image: '/images/jmstr_images.png',
         },
+        {
+          title: 'じっけんマスター',
+          subtitle: 'Science Experiments for Kids',
+          description:
+            'A science experiment platform for children to enjoy at home. Offers 120+ experiments across 8 categories, browsable by mood or subject, with downloadable instruction sheets.',
+          url: 'https://expt.mstr.site/index.html',
+          tag: 'Education',
+          image: '/images/expt_images.png',
+        },
       ],
     },
     about: {
@@ -182,6 +191,15 @@ export const translations = {
           url: 'https://japanese.mstr.site/',
           tag: '教育',
           image: '/images/jmstr_images.png',
+        },
+        {
+          title: 'じっけんマスター',
+          subtitle: 'おうちで楽しむ魔法のレシピ',
+          description:
+            '子どもが自宅で楽しめる科学実験サイト。120以上の実験を8つのカテゴリで提供。気分や教科で検索でき、実験ファイルのダウンロードも可能。',
+          url: 'https://expt.mstr.site/index.html',
+          tag: '教育',
+          image: '/images/expt_images.png',
         },
       ],
     },

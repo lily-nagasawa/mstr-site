@@ -20,6 +20,10 @@ export default function WorksCarousel() {
   const sectionRef = useRef<HTMLElement>(null)
   const [visible, setVisible] = useState(false)
 
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef = useRef(false)
+  const moveDragRef = useRef<(x: number) => void>(() => {})
+
   const itemCount = t.items.length
   const maxTranslate = -(itemCount - 1) * (cardWidth + GAP)
 
@@ -41,6 +45,20 @@ export default function WorksCarousel() {
     )
     if (sectionRef.current) obs.observe(sectionRef.current)
     return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => { isDraggingRef.current = isDragging }, [isDragging])
+
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
+    const handler = (e: TouchEvent) => {
+      if (!isDraggingRef.current) return
+      e.preventDefault()
+      moveDragRef.current(e.touches[0].clientX)
+    }
+    el.addEventListener('touchmove', handler, { passive: false })
+    return () => el.removeEventListener('touchmove', handler)
   }, [])
 
   const snapTo = useCallback(
@@ -73,6 +91,8 @@ export default function WorksCarousel() {
     },
     [isDragging, dragStart, maxTranslate]
   )
+
+  useEffect(() => { moveDragRef.current = moveDrag }, [moveDrag])
 
   const endDrag = useCallback(
     (clientX: number) => {
@@ -125,13 +145,13 @@ export default function WorksCarousel() {
 
       {/* ── カルーセル ── */}
       <div
+        ref={carouselRef}
         className="overflow-hidden pl-6 md:pl-[max(1.5rem,(100vw-80rem)/2+1.5rem)]"
         onMouseDown={(e) => { e.preventDefault(); startDrag(e.clientX) }}
         onMouseMove={(e) => moveDrag(e.clientX)}
         onMouseUp={(e) => endDrag(e.clientX)}
         onMouseLeave={() => isDragging && endDrag(dragStart.x)}
         onTouchStart={(e) => startDrag(e.touches[0].clientX)}
-        onTouchMove={(e) => { e.preventDefault(); moveDrag(e.touches[0].clientX) }}
         onTouchEnd={(e) => endDrag(e.changedTouches[0].clientX)}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
