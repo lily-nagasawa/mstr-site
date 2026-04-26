@@ -118,11 +118,11 @@ export default function WorksCarousel() {
     (clientX: number) => {
       if (!isDragging) return
       setIsDragging(false)
-      const diff   = clientX - dragStart.x
-      const step   = cardWidth + GAP
-      const raw    = -dragStart.translate / step
-      const target = Math.abs(diff) > 55
-        ? diff < 0 ? Math.ceil(raw) : Math.floor(raw)
+      const diff    = clientX - dragStart.x
+      const step    = cardWidth + GAP
+      const current = Math.round(-dragStart.translate / step)
+      const target  = Math.abs(diff) > 55
+        ? diff < 0 ? current + 1 : current - 1
         : Math.round(-translateXRef.current / step)
       snapTo(target)
     },
@@ -141,11 +141,11 @@ export default function WorksCarousel() {
     if (!isDraggingRef.current) return
     isDraggingRef.current = false
     setIsDragging(false)
-    const diff   = clientX - dragStartRef.current.x
-    const step   = cardWidthRef.current + GAP
-    const raw    = -dragStartRef.current.translate / step
-    const target = Math.abs(diff) > 55
-      ? diff < 0 ? Math.ceil(raw) : Math.floor(raw)
+    const diff    = clientX - dragStartRef.current.x
+    const step    = cardWidthRef.current + GAP
+    const current = Math.round(-dragStartRef.current.translate / step)
+    const target  = Math.abs(diff) > 55
+      ? diff < 0 ? current + 1 : current - 1
       : Math.round(-translateXRef.current / step)
     snapTo(target)
   }, [snapTo])
