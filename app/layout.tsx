@@ -47,11 +47,24 @@ export const metadata: Metadata = {
   verification: {
     google: ['XsFSrFzroR55YqxPZd4fHnVO__Jnkslm6WYel241WRQ', 'nEtA9r0OpP_X-Rb1Ahfxhvm6D6HC_dzL4BmSqomOvoA'],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'mstr.site',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#0A0A0A',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#0A0A0A" />
+      </head>
       <body className="bg-ink text-paper font-sans">
         <LanguageProvider>
           <GoogleAnalytics />
