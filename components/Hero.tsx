@@ -27,14 +27,6 @@ export default function Hero() {
       {/* ── 赤い上部アクセントライン ── */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-crimson z-10" />
 
-      {/* ── 背景グリッド ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[25, 50, 75].map((p) => (
-          <div key={p} className="absolute left-0 right-0 border-t border-white/[0.03]" style={{ top: `${p}%` }} />
-        ))}
-        <div className="absolute top-0 bottom-0 left-6 border-l border-white/[0.05]" />
-        <div className="absolute top-0 bottom-0 right-6 border-r border-white/[0.05]" />
-      </div>
 
       {/* ── 赤い縦ストライプ（左） ── */}
       <div
