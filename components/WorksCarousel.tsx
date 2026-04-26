@@ -13,7 +13,6 @@ export default function WorksCarousel() {
 
   const [cardWidth, setCardWidth] = useState(460)
   const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, translate: 0 })
   const [translateX, setTranslateX] = useState(0)
   const [hasDragged, setHasDragged] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -21,11 +20,22 @@ export default function WorksCarousel() {
   const [visible, setVisible] = useState(false)
 
   const carouselRef = useRef<HTMLDivElement>(null)
-  const isDraggingRef = useRef(false)
-  const moveDragRef = useRef<(x: number) => void>(() => {})
 
-  const itemCount = t.items.length
+  // Refs for synchronous drag logic — avoids stale-closure issues with React state
+  const isDraggingRef   = useRef(false)
+  const dragStartRef    = useRef({ x: 0, translate: 0 })
+  const translateXRef   = useRef(0)
+  const maxTranslateRef = useRef(0)
+  const cardWidthRef    = useRef(460)
+  const itemCountRef    = useRef(t.items.length)
+
+  const itemCount    = t.items.length
   const maxTranslate = -(itemCount - 1) * (cardWidth + GAP)
+
+  // Keep refs in sync with derived values
+  useEffect(() => { maxTranslateRef.current = maxTranslate }, [maxTranslate])
+  useEffect(() => { cardWidthRef.current    = cardWidth    }, [cardWidth])
+  useEffect(() => { itemCountRef.current    = itemCount    }, [itemCount])
 
   useEffect(() => {
     const update = () => {
@@ -47,15 +57,21 @@ export default function WorksCarousel() {
     return () => obs.disconnect()
   }, [])
 
-  useEffect(() => { isDraggingRef.current = isDragging }, [isDragging])
-
+  // Non-passive touchmove — all logic via refs so no stale closures
   useEffect(() => {
     const el = carouselRef.current
     if (!el) return
     const handler = (e: TouchEvent) => {
       if (!isDraggingRef.current) return
       e.preventDefault()
-      moveDragRef.current(e.touches[0].clientX)
+      const clientX = e.touches[0].clientX
+      const diff    = clientX - dragStartRef.current.x
+      if (Math.abs(diff) > 6) setHasDragged(true)
+      let next = dragStartRef.current.translate + diff
+      if (next > 50)                         next = 50 * Math.tanh(next / 100)
+      if (next < maxTranslateRef.current - 50) next = maxTranslateRef.current - 50 * Math.tanh((maxTranslateRef.current - next) / 100)
+      translateXRef.current = next
+      setTranslateX(next)
     }
     el.addEventListener('touchmove', handler, { passive: false })
     return () => el.removeEventListener('touchmove', handler)
@@ -63,14 +79,19 @@ export default function WorksCarousel() {
 
   const snapTo = useCallback(
     (index: number) => {
-      const c = Math.max(0, Math.min(itemCount - 1, index))
+      const c    = Math.max(0, Math.min(itemCountRef.current - 1, index))
+      const newX = -c * (cardWidthRef.current + GAP)
       setActiveIndex(c)
-      setTranslateX(-c * (cardWidth + GAP))
+      translateXRef.current = newX
+      setTranslateX(newX)
     },
-    [cardWidth, itemCount]
+    []
   )
 
-  const startDrag = useCallback(
+  // Mouse drag — uses state (React events are synchronous, no timing issue)
+  const [dragStart, setDragStart] = useState({ x: 0, translate: 0 })
+
+  const startMouseDrag = useCallback(
     (clientX: number) => {
       setIsDragging(true)
       setHasDragged(false)
@@ -79,7 +100,7 @@ export default function WorksCarousel() {
     [translateX]
   )
 
-  const moveDrag = useCallback(
+  const moveMouseDrag = useCallback(
     (clientX: number) => {
       if (!isDragging) return
       const diff = clientX - dragStart.x
@@ -87,14 +108,13 @@ export default function WorksCarousel() {
       let next = dragStart.translate + diff
       if (next > 50)                next = 50 * Math.tanh(next / 100)
       if (next < maxTranslate - 50) next = maxTranslate - 50 * Math.tanh((maxTranslate - next) / 100)
+      translateXRef.current = next
       setTranslateX(next)
     },
     [isDragging, dragStart, maxTranslate]
   )
 
-  useEffect(() => { moveDragRef.current = moveDrag }, [moveDrag])
-
-  const endDrag = useCallback(
+  const endMouseDrag = useCallback(
     (clientX: number) => {
       if (!isDragging) return
       setIsDragging(false)
@@ -103,11 +123,32 @@ export default function WorksCarousel() {
       const raw    = -dragStart.translate / step
       const target = Math.abs(diff) > 55
         ? diff < 0 ? Math.ceil(raw) : Math.floor(raw)
-        : Math.round(-translateX / step)
+        : Math.round(-translateXRef.current / step)
       snapTo(target)
     },
-    [isDragging, dragStart, cardWidth, translateX, snapTo]
+    [isDragging, dragStart, cardWidth, snapTo]
   )
+
+  // Touch drag — uses refs so it works before React re-renders
+  const startTouchDrag = useCallback((clientX: number) => {
+    isDraggingRef.current  = true
+    dragStartRef.current   = { x: clientX, translate: translateXRef.current }
+    setIsDragging(true)
+    setHasDragged(false)
+  }, [])
+
+  const endTouchDrag = useCallback((clientX: number) => {
+    if (!isDraggingRef.current) return
+    isDraggingRef.current = false
+    setIsDragging(false)
+    const diff   = clientX - dragStartRef.current.x
+    const step   = cardWidthRef.current + GAP
+    const raw    = -dragStartRef.current.translate / step
+    const target = Math.abs(diff) > 55
+      ? diff < 0 ? Math.ceil(raw) : Math.floor(raw)
+      : Math.round(-translateXRef.current / step)
+    snapTo(target)
+  }, [snapTo])
 
   return (
     <section
@@ -147,12 +188,12 @@ export default function WorksCarousel() {
       <div
         ref={carouselRef}
         className="overflow-hidden pl-6 md:pl-[max(1.5rem,(100vw-80rem)/2+1.5rem)]"
-        onMouseDown={(e) => { e.preventDefault(); startDrag(e.clientX) }}
-        onMouseMove={(e) => moveDrag(e.clientX)}
-        onMouseUp={(e) => endDrag(e.clientX)}
-        onMouseLeave={() => isDragging && endDrag(dragStart.x)}
-        onTouchStart={(e) => startDrag(e.touches[0].clientX)}
-        onTouchEnd={(e) => endDrag(e.changedTouches[0].clientX)}
+        onMouseDown={(e) => { e.preventDefault(); startMouseDrag(e.clientX) }}
+        onMouseMove={(e) => moveMouseDrag(e.clientX)}
+        onMouseUp={(e) => endMouseDrag(e.clientX)}
+        onMouseLeave={() => isDragging && endMouseDrag(dragStart.x)}
+        onTouchStart={(e) => startTouchDrag(e.touches[0].clientX)}
+        onTouchEnd={(e) => endTouchDrag(e.changedTouches[0].clientX)}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         <div
